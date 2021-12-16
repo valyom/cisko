@@ -85,7 +85,7 @@ bool testWrongInput (BBQ_Serve &bbq) {
     return result;
 }
  
- int mainAllStateMachineTests()
+ int main()
  {
     bool result;
     BBQ_Serve bbq;
