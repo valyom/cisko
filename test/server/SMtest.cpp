@@ -14,7 +14,7 @@ bool testTakeChicken (BBQ_Serve &bbq) {
 
     std::cout << "Test Buy chicken " << std::endl; 
     
-    result = result && bbq.clientRequest("I AM HUNGRY, GIVE ME BBQ");
+    result = result && bbq.clientRequest("i am hungry, GIVE ME BBQ");
     result = result && StateMachine::Chicken == bbq.getCurrentState(); 
     
     result = result && bbq.clientRequest( "I TAKE THAT!!!");
@@ -85,7 +85,7 @@ bool testWrongInput (BBQ_Serve &bbq) {
     return result;
 }
  
- int main()
+ int mainTestSM()
  {
     bool result;
     BBQ_Serve bbq;

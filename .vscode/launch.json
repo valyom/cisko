@@ -22,7 +22,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "C/C++: g++-9 build project",
+            "preLaunchTask": "C/C++: g++-9 build server",
             "miDebuggerPath": "/usr/bin/gdb"
         }
     ]

@@ -13,7 +13,7 @@
 		},
 		{
 			"type": "cppbuild",
-			"label": "C/C++: g++-9 build project",
+			"label": "C/C++: g++-9 build server",
 			"command": "/usr/bin/g++-9",
 			"dependsOn": [
 				"create build folder"
@@ -21,8 +21,9 @@
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
-				"${workspaceFolder}/src/*.cpp",
-				"${workspaceFolder}/test/*.cpp",
+				"-pthread"
+				"${workspaceFolder}/src/server/*.cpp",
+				"${workspaceFolder}/test/server/*.cpp",
 				"-o",
 				"${workspaceFolder}/bld/server.out",
 				"--include-directory=${workspaceFolder}/include"
@@ -33,11 +34,44 @@
 			"problemMatcher": [
 				"$gcc"
 			],
+			
+			"detail": "compiler: /usr/bin/g++-9"
+		},
+		{
+			"type": "cppbuild",
+			"label": "C/C++: g++-9 build client",
+			"command": "/usr/bin/g++-9",
+			"dependsOn": [ "create build folder"],
+			"args": [
+				"-fdiagnostics-color=always",
+				"-g",
+				"${workspaceFolder}/src/client/*.cpp" ,
+				"-o",
+				"${workspaceFolder}/bld/client.out",
+				"--include-directory=${workspaceFolder}/include"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+
+			"detail": "compiler: /usr/bin/g++-9"
+		},
+		{
+			"label": "build all",
+			"type": "shell",
+			"command": "mkdir -p ${workspaceFolder}/bld " ,
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			},
-			"detail": "compiler: /usr/bin/g++-9"
-		}
+			"dependsOn": [
+				"C/C++: g++-9 build server",
+				"C/C++: g++-9 build client"
+			],
+		},
+		
 	]
 }

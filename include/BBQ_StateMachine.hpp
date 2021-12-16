@@ -1,13 +1,7 @@
-#ifndef BBQ_STORE
-#define  BBQ_STORE
+#pragma once
 
 #include <map>
 
-//  New client puts state machint in state Checking for the BBQ available. 
-//  From this state an internal push event PushChicken change the state to Chicken , i.e. BBQ shop propose chicken to the client
-//  On Reject answer the state machine will propose Beef and Mammoth respectively. On Accept the new State is Served.
-//  From Served a transition to Idle is triggered automatically. 
-//   
 // 
 //  State machine transitions table
 //     curr state    event           new state
@@ -46,8 +40,8 @@ public:
 
     StateMachine ();
 protected:
-    virtual void onEnterState (State state) {}; // allows the children of the StateMachine class to take soem actions on enter a state
-    virtual void onExiState (State state) {};   // allows the children of the StateMachine class to take soem actions on exit a state
+    virtual void onEnterState (const State state) {}; // allows the children of the StateMachine class to take soem actions on enter a state
+    virtual void onExitState (const State state) {};   // allows the children of the StateMachine class to take soem actions on exit a state
 
     struct StateTransition {
         StateMachine::State state_;
@@ -79,28 +73,32 @@ class BBQ_Serve  : public StateMachine
 {
 private: 
     const std::string stateIdleEnterAction     = "";
-    const std::string stateCheckingEnterAction = "server: OK, WAIT";
-    const std::string stateChickenEnterAction  = "server: CHICKEN READY";
-    const std::string stateBeefEnterAction     = "server: BEEF READY";
-    const std::string stateMammothEnterAction  = "server: LAST MONTH MAMMOTH READY";
-    const std::string stateServedenterAction   = "server: SERVED BYE";
-    const std::string stateClosedEnterAction   = "server: CLOSED BYE"; 
+    const std::string stateCheckingEnterAction = "OK, WAIT\n";
+    const std::string stateChickenEnterAction  = "CHICKEN READY";
+    const std::string stateBeefEnterAction     = "BEEF READY";
+    const std::string stateMammothEnterAction  = "LAST MONTH MAMMOTH READY";
+    const std::string stateServedenterAction   = "SERVED BYE\n";
+    const std::string stateClosedEnterAction   = "CLOSED BYE"; 
+    const std::string stateWrongTransitionAction   = "I bag your pardon." ;
     
     //allowed client requests
     const std::string REQ_HUNGRY   = "I AM HUNGRY, GIVE ME BBQ";
     const std::string REQ_ACCEPT   = "I TAKE THAT!!!";
     const std::string REQ_REECT    = "NO THANKS";        
+    int newsockfd_;
 private:
     std::map<std::string, StateMachine::Action> requestToevent;
+    bool isEnough_;
 public:
-    BBQ_Serve() ;
+    BBQ_Serve( ) ;
     ~BBQ_Serve();
     bool clientRequest(const char * userInput);
+    void runServer(int port);
+ 
 protected:
     virtual void onEnterState(const StateMachine::State state);
+    virtual void onExitState (const StateMachine::State state) ;
 private:
     void commonInStateCallback(const char * message) ;
-
-};
-
-#endif // BBQ_STORE
+    
+}; 
