@@ -5,11 +5,19 @@
 			"label": "echo wrkspace",
 			"type": "shell",
 			"command": "echo ${workspaceFolder}"
+		}, 
+		{
+			"label": "create build folder",
+			"type": "shell",
+			"command": "mkdir -p ${workspaceFolder}/bld " 
 		},
 		{
 			"type": "cppbuild",
 			"label": "C/C++: g++-9 build project",
 			"command": "/usr/bin/g++-9",
+			"dependsOn": [
+				"create build folder"
+			],
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
@@ -20,7 +28,7 @@
 				"--include-directory=${workspaceFolder}/include"
 			],
 			"options": {
-				"cwd": "${fileDirname}"
+				"cwd": "${workspaceFolder}"
 			},
 			"problemMatcher": [
 				"$gcc"
