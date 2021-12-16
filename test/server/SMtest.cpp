@@ -1,4 +1,4 @@
- #include "BBQ_StateMachine.hpp"
+#include "BBQ.h"
 #include <iostream>
 
 void reportTestResult (bool result) {
