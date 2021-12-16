@@ -113,6 +113,7 @@ void BBQ_Serve::runServer(int portNum){
     while (reconnect) {
         reconnect = false;
         // Here, we set the maximum size for the backlog queue to 1.
+        std::cout << "server: wait a new client"   << std::endl;
         listen(sockfd, 1);
 
         clilen = sizeof(cli_addr); 
@@ -121,7 +122,7 @@ void BBQ_Serve::runServer(int portNum){
             error("ERROR on accept"); 
 
         std::cout << "server: got connection from " << inet_ntoa(cli_addr.sin_addr)<< " port " <<  ntohs(cli_addr.sin_port)  << std::endl; 
-        std::cout << "server: wait a new client"   << std::endl;
+        
 
         while (!isEnough_) {
             bzero(buffer,256); 

@@ -7,15 +7,25 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <iostream>
-
+#include <signal.h>
 #include <sstream>
 #include <vector>
 #include <sys/ioctl.h>
+ 
+int sockfd=-1, portno=0, n=0;
 
 void error(const char *msg)
 {
     perror(msg);
+    if (-1 != sockfd) write(sockfd, "Quit", 4);
+    close(sockfd);
     exit(0);
+}
+
+void break_handler(int s){
+    if (-1 != sockfd) write(sockfd, "Quit", 4);
+    close(sockfd);
+    exit(1); 
 }
 
 std::vector<std::string> split (std::string s, std::string delimiter) {
@@ -36,9 +46,17 @@ std::vector<std::string> split (std::string s, std::string delimiter) {
 
 int main(int argc, char *argv[])
 {
-    int sockfd, portno, n;
+    
     struct sockaddr_in serv_addr;
     struct hostent *server;
+
+    struct sigaction sigIntHandler;
+
+   sigIntHandler.sa_handler = break_handler;
+   sigemptyset(&sigIntHandler.sa_mask);
+   sigIntHandler.sa_flags = 0;
+
+   sigaction(SIGINT, &sigIntHandler, NULL);
 
     char buffer[256];
     if (argc < 3) {
