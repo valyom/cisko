@@ -1,0 +1,34 @@
+{
+	"version": "2.0.0",
+	"tasks": [ 
+		{
+			"label": "echo wrkspace",
+			"type": "shell",
+			"command": "echo ${workspaceFolder}"
+		},
+		{
+			"type": "cppbuild",
+			"label": "C/C++: g++-9 build project",
+			"command": "/usr/bin/g++-9",
+			"args": [
+				"-fdiagnostics-color=always",
+				"-g",
+				"${workspaceFolder}/src/*.cpp",
+				"-o",
+				"${workspaceFolder}/bld/server.out",
+				"--include-directory=${workspaceFolder}/include"
+			],
+			"options": {
+				"cwd": "${fileDirname}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"detail": "compiler: /usr/bin/g++-9"
+		}
+	]
+}
