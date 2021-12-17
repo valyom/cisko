@@ -30,7 +30,7 @@ public:
                  NumStates };
 
 
-    enum Action { NewClient,   // client sayd "I AM HUNGRY, GIVE ME BBQ"
+    enum Event {  NewClient,   // client sayd "I AM HUNGRY, GIVE ME BBQ"
                   PushChicken, // internal event to transit to state Chicken
                   Reject,      // client sayd  "NO THANKS"
                   Accept,      // client sayd  "I TAKE THAT!!!"  
@@ -41,29 +41,33 @@ public:
 
     StateMachine ();
 protected:
+     //should be inherited in successors to allow custom logic when state is changed.
+     //in reality we may need the event as well, ut for this SM it s not necessary
     virtual void onEnterState (const State state) {}; // allows the children of the StateMachine class to take soem actions on enter a state
-    virtual void onExitState (const State state) {};   // allows the children of the StateMachine class to take soem actions on exit a state
+    virtual void onExitState (const State state) {};  // allows the children of the StateMachine class to take soem actions on exit a state
 
     struct StateTransition {
-        StateMachine::State state_;
-        StateMachine::Action action_;
-        StateTransition(StateMachine::State state, StateMachine::Action action):state_(state), action_(action){}
+        StateMachine::State state;
+        StateMachine::Event event;
+        StateTransition(StateMachine::State state, StateMachine::Event action):state(state), event(action){}
 
         friend bool operator<(const StateTransition& sta1, const StateTransition& sta2) {
-            return (sta1.state_ < sta2.state_)  || (sta1.state_ == sta2.state_ && sta1.action_ < sta2.action_);
+            return (sta1.state < sta2.state)  || (sta1.state == sta2.state && sta1.event < sta2.event);
         }
     };
 
-    typedef std::map<StateMachine::StateTransition, StateMachine::State> StateDiagram;
-    std::map <StateMachine::Action, std::string>  clientRequests;
-
+    //to be able to swith to a state because of internal SM logic instead of user interaction
     void internalRecursiveTransitions();
+
 public:
-   void processSMEvent (Action event);
+   void processSMEvent (Event event);
    State getCurrentState();
  protected:    
-    State getInitialState();
+    typedef std::map<StateMachine::StateTransition, StateMachine::State> StateDiagram;
+    
+    std::map <StateMachine::Event, std::string>  m_clientRequests;
+    StateDiagram m_stateDiag;
+    State m_currentState; 
 
-    StateDiagram stateDiag_;
-    State currentState_; 
+    State getInitialState();
 };

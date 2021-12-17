@@ -6,55 +6,55 @@
  
 StateMachine::StateMachine() {
 //                                           curr state    event           new state
-    stateDiag_[StateMachine::StateTransition(Idle,         NewClient)]   = Checking;
-    stateDiag_[StateMachine::StateTransition(Checking,     PushChicken)] = Chicken;
-    stateDiag_[StateMachine::StateTransition(Chicken,      Reject)]      = Beef;
-    stateDiag_[StateMachine::StateTransition(Beef,         Reject)]      = Mammoth;
-    stateDiag_[StateMachine::StateTransition(Mammoth,      Reject)]      = Idle;
-    stateDiag_[StateMachine::StateTransition(Chicken,      Accept)]      = Served;
-    stateDiag_[StateMachine::StateTransition(Beef,         Accept)]      = Served;
-    stateDiag_[StateMachine::StateTransition(Mammoth,      Accept)]      = Served;
-    stateDiag_[StateMachine::StateTransition(Served,       PushIdle)]    = Idle;
-    stateDiag_[StateMachine::StateTransition(Idle,         Close)]       = Closed;
-    stateDiag_[StateMachine::StateTransition(Served,       Close)]       = Closed;
+    m_stateDiag[StateMachine::StateTransition(Idle,         NewClient)]   = Checking;
+    m_stateDiag[StateMachine::StateTransition(Checking,     PushChicken)] = Chicken;
+    m_stateDiag[StateMachine::StateTransition(Chicken,      Reject)]      = Beef;
+    m_stateDiag[StateMachine::StateTransition(Beef,         Reject)]      = Mammoth;
+    m_stateDiag[StateMachine::StateTransition(Mammoth,      Reject)]      = Idle;
+    m_stateDiag[StateMachine::StateTransition(Chicken,      Accept)]      = Served;
+    m_stateDiag[StateMachine::StateTransition(Beef,         Accept)]      = Served;
+    m_stateDiag[StateMachine::StateTransition(Mammoth,      Accept)]      = Served;
+    m_stateDiag[StateMachine::StateTransition(Served,       PushIdle)]    = Idle;
+    m_stateDiag[StateMachine::StateTransition(Idle,         Close)]       = Closed;
+    m_stateDiag[StateMachine::StateTransition(Served,       Close)]       = Closed;
  
  
     //  current state is initialized to Idle
-    currentState_ = Idle;   
+    m_currentState = Idle;   
 }
 
 void StateMachine::internalRecursiveTransitions() {
     //  If current state is: Served change state to Idle
-    if (Served == currentState_) {
+    if (Served == m_currentState) {
         processSMEvent(PushIdle);
     }
 
     //  If current state is: NewClient change state to Chicken
-    if (Checking == currentState_) {
+    if (Checking == m_currentState) {
         processSMEvent(PushChicken);
     }
 }
 
-void StateMachine::processSMEvent (Action event) {
+void StateMachine::processSMEvent (Event event) {
     //  The state machine "state" is: currentState
-    StateTransition stateAction(currentState_, event);
+    StateTransition stateAction(m_currentState, event);
 
-    if (stateDiag_.find(stateAction) == stateDiag_.end()) {
+    if (m_stateDiag.find(stateAction) == m_stateDiag.end()) {
         //  Invalid state transition
         onEnterState(NumStates);
         return;
     } 
 
     //  Execute the action and update the state machine
-    onExitState(currentState_);
-    currentState_ = stateDiag_[stateAction];
-    onEnterState(currentState_);
+    onExitState(m_currentState);
+    m_currentState = m_stateDiag[stateAction];
+    onEnterState(m_currentState);
 
     internalRecursiveTransitions() ;
 }
 
 StateMachine::State StateMachine::getCurrentState() {
-    return currentState_;
+    return m_currentState;
 }
 
 StateMachine::State StateMachine::getInitialState() {
