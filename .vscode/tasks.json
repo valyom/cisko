@@ -21,7 +21,7 @@
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
-				"-pthread"
+				"-pthread",
 				"${workspaceFolder}/src/server/*.cpp",
 				"${workspaceFolder}/test/server/*.cpp",
 				"-o",
